@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/groups">Группы</a></li>
+                <li class="breadcrumb-item"><a href="/groups/{{ group_name }}">{{ group_name }}</a></li>
+                <li class="breadcrumb-item active">Проведение урока</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil-square me-2"></i>
+                Проведение урока в группе {{ group_name }}
+            </div>
+            <div class="card-body">
+                {% if not group.subjects %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        В группе нет предметов. Сначала <a href="/groups/{{ group_name }}">добавьте предметы</a>.
+                    </div>
+                {% elif not group.students %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        В группе нет студентов. Сначала <a href="/groups/{{ group_name }}">добавьте студентов</a>.
+                    </div>
+                {% else %}
+                    <form action="/groups/{{ group_name }}/lesson" method="post">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Предмет</label>
+                                <select name="subject" class="form-select" required>
+                                    {% for subject in group.subjects %}
+                                    <option value="{{ subject }}">{{ subject }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Дата</label>
+                                <input type="text" name="date" class="form-control" 
+                                       placeholder="ДД.ММ.ГГГГ (Enter - сегодня)">
+                                <div class="form-text">Оставьте пустым для сегодняшней даты</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Тема урока</label>
+                                <input type="text" name="topic" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Домашнее задание</label>
+                                <input type="text" name="homework" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                Оценки
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted">
+                                    Введите оценки через пробел (например: 5 4 5). 
+                                    Можно использовать точку или запятую.
+                                </p>
+                                
+                                {% for id, student in group.students.items() %}
+                                <div class="row mb-2">
+                                    <div class="col-md-4">
+                                        <strong>{{ student.name }}</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" name="grades_{{ id }}" class="form-control" 
+                                               placeholder="Оценки (Enter - пропустить)">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Провести урок
+                            </button>
+                            <a href="/groups/{{ group_name }}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

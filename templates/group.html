@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/groups">Группы</a></li>
+                <li class="breadcrumb-item active">{{ group_name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Информация о группе
+            </div>
+            <div class="card-body">
+                <p><strong>Название:</strong> {{ group_name }}</p>
+                <p><strong>Создана:</strong> {{ group.created }}</p>
+                <p><strong>Студентов:</strong> {{ group.students|length }}</p>
+                <p><strong>Предметов:</strong> {{ group.subjects|length }}</p>
+                <p><strong>Уроков проведено:</strong> {{ group.lessons|length }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-journal-bookmark-fill me-2"></i>
+                Предметы
+            </div>
+            <div class="card-body">
+                {% if group.subjects %}
+                    <ul class="list-group mb-3">
+                        {% for subject in group.subjects %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ subject }}
+                            <a href="/groups/{{ group_name }}/delete_subject/{{ subject }}" 
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Удалить предмет {{ subject }}?')">
+                                <i class="bi bi-x"></i>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Предметов пока нет</p>
+                {% endif %}
+                
+                <form action="/groups/{{ group_name }}/add_subject" method="post" class="row g-2">
+                    <div class="col">
+                        <input type="text" class="form-control" name="subject" placeholder="Новый предмет" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Добавить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="bi bi-people-fill me-2"></i>
+                    Студенты
+                </span>
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Добавить студента
+                </button>
+            </div>
+            <div class="card-body">
+                {% if group.students %}
+                    <ul class="list-group">
+                        {% for id, student in group.students.items() %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>ID {{ id }}:</strong> {{ student.name }}
+                                <br><small class="text-muted">Добавлен: {{ student.date_added }}</small>
+                            </div>
+                            <div>
+                                <a href="/groups/{{ group_name }}/student/{{ id }}" class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="/groups/{{ group_name }}/delete_student/{{ id }}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Удалить студента {{ student.name }}?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Студентов пока нет</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-gear-fill me-2"></i>
+                Действия
+            </div>
+            <div class="card-body">
+                <a href="/groups/{{ group_name }}/lesson" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Провести урок
+                </a>
+                <a href="/groups/{{ group_name }}/journal" class="btn btn-info">
+                    <i class="bi bi-journal-text me-2"></i>
+                    Журнал
+                </a>
+                <a href="/groups/{{ group_name }}/statistics" class="btn btn-success">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Статистика
+                </a>
+                <a href="/groups/{{ group_name }}/delete" class="btn btn-danger" 
+                   onclick="return confirm('Удалить группу {{ group_name }}? Все данные будут потеряны!')">
+                    <i class="bi bi-trash me-2"></i>
+                    Удалить группу
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно добавления студента -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавление студента</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/groups/{{ group_name }}/add_student" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="student_name" class="form-label">ФИО студента</label>
+                        <input type="text" class="form-control" id="student_name" name="student_name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

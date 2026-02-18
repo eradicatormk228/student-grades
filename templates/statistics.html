@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/groups">Группы</a></li>
+                <li class="breadcrumb-item"><a href="/groups/{{ group_name }}">{{ group_name }}</a></li>
+                <li class="breadcrumb-item active">Статистика</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pie-chart-fill me-2"></i>
+                Общая статистика
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Всего студентов:</th>
+                        <td>{{ students_count }}</td>
+                    </tr>
+                    <tr>
+                        <th>Уроков проведено:</th>
+                        <td>{{ lessons_count }}</td>
+                    </tr>
+                    <tr>
+                        <th>Студентов с оценками:</th>
+                        <td>{{ total_with_grades }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-bar-chart-fill me-2"></i>
+                Распределение по успеваемости
+            </div>
+            <div class="card-body">
+                {% if total_with_grades > 0 %}
+                    <table class="table">
+                        <tr>
+                            <th>Отличники (>=4.5):</th>
+                            <td>{{ excellent }} чел. ({{ (excellent / total_with_grades * 100)|round(1) }}%)</td>
+                        </tr>
+                        <tr>
+                            <th>Хорошисты (3.5-4.4):</th>
+                            <td>{{ good }} чел. ({{ (good / total_with_grades * 100)|round(1) }}%)</td>
+                        </tr>
+                        <tr>
+                            <th>Троечники (2.5-3.4):</th>
+                            <td>{{ satisfactory }} чел. ({{ (satisfactory / total_with_grades * 100)|round(1) }}%)</td>
+                        </tr>
+                        <tr>
+                            <th>Двоечники (<2.5):</th>
+                            <td>{{ poor }} чел. ({{ (poor / total_with_grades * 100)|round(1) }}%)</td>
+                        </tr>
+                    </table>
+                {% else %}
+                    <p class="text-muted">Нет данных для статистики</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-trophy-fill me-2"></i>
+                Рейтинг студентов
+            </div>
+            <div class="card-body">
+                {% if student_averages %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Место</th>
+                                <th>Студент</th>
+                                <th>Средний балл</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in student_averages %}
+                            <tr class="{% if loop.index == 1 %}table-warning{% elif loop.index == 2 %}table-secondary{% elif loop.index == 3 %}table-info{% endif %}">
+                                <td>
+                                    {% if loop.index == 1 %}
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    {% elif loop.index == 2 %}
+                                        <i class="bi bi-star-fill text-secondary"></i>
+                                    {% elif loop.index == 3 %}
+                                        <i class="bi bi-star-fill text-info"></i>
+                                    {% else %}
+                                        {{ loop.index }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ student.name }}</td>
+                                <td><strong>{{ student.avg }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-muted">Нет данных для рейтинга</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

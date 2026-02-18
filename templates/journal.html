@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/groups">Группы</a></li>
+                <li class="breadcrumb-item"><a href="/groups/{{ group_name }}">{{ group_name }}</a></li>
+                <li class="breadcrumb-item active">Журнал</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-journal-text me-2"></i>
+                Журнал успеваемости группы {{ group_name }}
+            </div>
+            <div class="card-body">
+                {% if lessons %}
+                    {% for lesson in lessons %}
+                        <div class="card mb-3">
+                            <div class="card-header bg-info text-white">
+                                <strong>{{ lesson.date }} | {{ lesson.subject }}</strong>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Тема:</strong> {{ lesson.topic }}</p>
+                                <p><strong>Домашнее задание:</strong> {{ lesson.homework if lesson.homework else 'не задано' }}</p>
+                                
+                                {% if lesson.grades %}
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Студент</th>
+                                                <th>Оценки</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for student_id, grades in lesson.grades.items() %}
+                                            <tr>
+                                                <td>{{ students[student_id]['name'] if student_id in students else 'Неизвестный студент' }}</td>
+                                                <td>
+                                                    {% for grade in grades %}
+                                                        <span class="badge bg-primary me-1">{{ grade }}</span>
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p class="text-muted">Нет оценок за этот урок</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-muted my-5">
+                        <i class="bi bi-journal-x display-4 d-block"></i>
+                        Уроков ещё не проводилось
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

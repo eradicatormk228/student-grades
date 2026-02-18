@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                О программе
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Данная программа предназначена для автоматизации учёта успеваемости студентов 
+                    с поддержкой поурочного учёта. Программа позволяет:
+                </p>
+                <ul>
+                    <li>Создавать и управлять группами студентов</li>
+                    <li>Добавлять предметы для каждой группы</li>
+                    <li>Вести список студентов с автоматическим присвоением ID</li>
+                    <li>Проводить уроки с фиксацией даты, темы и домашнего задания</li>
+                    <li>Выставлять несколько оценок одному студенту за урок</li>
+                    <li>Просматривать журнал успеваемости с группировкой по датам</li>
+                    <li>Смотреть историю оценок каждого студента</li>
+                    <li>Анализировать статистику и формировать рейтинг</li>
+                </ul>
+                <a href="/groups" class="btn btn-primary">
+                    <i class="bi bi-arrow-right-circle me-2"></i>
+                    Перейти к группам
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-people-fill me-2"></i>
+                    Группы
+                </h5>
+                <p class="card-text">Управление группами, предметами и студентами</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Уроки
+                </h5>
+                <p class="card-text">Проведение уроков и выставление оценок</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Статистика
+                </h5>
+                <p class="card-text">Анализ успеваемости и рейтинги</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
